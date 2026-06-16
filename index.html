@@ -930,10 +930,10 @@ body.light-mode .theme-toggle{
         Our solar experts will contact you shortly
       </p>
       <form 
-
+  id="solarForm"
+  class="space-y-5"
   action="https://formspree.io/f/mjgzenvv"
-  method="POST"
-  class="space-y-5">
+  method="POST">
 
   <input type="text"
     name="name"
@@ -953,14 +953,36 @@ body.light-mode .theme-toggle{
     class="input"
     required>
 
-  <select name="system" class="input" required>
+<input type="email"
+name="email"
+placeholder="Email Address"
+class="input">
 
-    <option value="">Select Solar System</option>
-    <option>3 kW</option>
-    <option>4 kW</option>
-    <option>5 kW</option>
-    <option>Custom</option>
+<input type="number"
+name="bill"
+placeholder="Monthly Electricity Bill"
+class="input">
 
+<select id="systemSize"
+name="system"
+class="input">
+
+<option value="3">3 KW</option>
+<option value="4">4 KW</option>
+<option value="5">5 KW</option>
+<option value="10">10 KW</option>
+
+</select>
+
+<input type="text"
+name="panel_brand"
+placeholder="Solar Panel Brand"
+class="input">
+
+<input type="text"
+name="inverter_brand"
+placeholder="Inverter Brand"
+class="input">
   </select>
 
   <textarea
@@ -1094,6 +1116,70 @@ body.light-mode .theme-toggle{
     lucide.createIcons();
 
   });
+
+</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+
+document.getElementById("solarForm")
+.addEventListener("submit", function(e){
+
+e.preventDefault();
+
+const name =
+document.querySelector('[name="customer_name"]').value;
+
+const mobile =
+document.querySelector('[name="mobile"]').value;
+
+const email =
+document.querySelector('[name="email"]').value;
+
+const system =
+document.getElementById("systemSize").value;
+
+let price = 0;
+
+if(system == "3"){
+price = 190000;
+}
+else if(system == "4"){
+price = 230000;
+}
+else if(system == "5"){
+price = 280000;
+}
+else{
+price = 490000;
+}
+
+const subsidy = price * 0.30;
+
+const finalPrice = price - subsidy;
+
+const { jsPDF } = window.jspdf;
+
+const doc = new jsPDF();
+
+doc.setFontSize(22);
+doc.text("GNAGA SOLAR ENERGY",20,20);
+
+doc.setFontSize(12);
+
+doc.text("Customer Name: " + name,20,40);
+doc.text("Mobile: " + mobile,20,50);
+doc.text("Email: " + email,20,60);
+
+doc.text("System Size: " + system + " KW",20,80);
+doc.text("System Price: Rs " + price,20,90);
+doc.text("Government Subsidy: Rs " + subsidy,20,100);
+doc.text("Final Price: Rs " + finalPrice,20,110);
+
+doc.save(name + "_Quotation.pdf");
+
+this.submit();
+
+});
 
 </script>
 </body>
